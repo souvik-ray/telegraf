@@ -55,7 +55,7 @@ var sampleConfig = `
   queue_group = "telegraf_consumers"
   ### Maximum number of metrics to buffer between collection intervals
   metric_buffer = 100000
-  
+
   ### Data format to consume. This can be "json", "influx" or "graphite"
   ### Each data format has it's own unique set of configuration options, read
   ### more about them here:
@@ -84,7 +84,7 @@ func (n *natsConsumer) natsErrHandler(c *nats.Conn, s *nats.Subscription, e erro
 }
 
 // Start the nats consumer. Caller must call *natsConsumer.Stop() to clean up.
-func (n *natsConsumer) Start() error {
+func (n *natsConsumer) Start(_ telegraf.Accumulator) error {
 	n.Lock()
 	defer n.Unlock()
 

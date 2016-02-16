@@ -89,7 +89,7 @@ func (m *MQTTConsumer) SetParser(parser parsers.Parser) {
 	m.parser = parser
 }
 
-func (m *MQTTConsumer) Start() error {
+func (m *MQTTConsumer) Start(_ telegraf.Accumulator) error {
 	m.Lock()
 	defer m.Unlock()
 	if m.QoS > 2 || m.QoS < 0 {

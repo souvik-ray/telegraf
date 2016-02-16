@@ -72,7 +72,7 @@ func (k *Kafka) SetParser(parser parsers.Parser) {
 	k.parser = parser
 }
 
-func (k *Kafka) Start() error {
+func (k *Kafka) Start(_ telegraf.Accumulator) error {
 	k.Lock()
 	defer k.Unlock()
 	var consumerErr error

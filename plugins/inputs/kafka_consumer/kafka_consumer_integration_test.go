@@ -44,18 +44,18 @@ func TestReadsMetricsFromKafka(t *testing.T) {
 	}
 	p, _ := parsers.NewInfluxParser()
 	k.SetParser(p)
-	if err := k.Start(); err != nil {
+
+	// Verify that we can now gather the sent message
+	var acc testutil.Accumulator
+	// Sanity check
+	assert.Equal(t, 0, len(acc.Metrics), "There should not be any points")
+	if err := k.Start(&acc); err != nil {
 		t.Fatal(err.Error())
 	} else {
 		defer k.Stop()
 	}
 
 	waitForPoint(k, t)
-
-	// Verify that we can now gather the sent message
-	var acc testutil.Accumulator
-	// Sanity check
-	assert.Equal(t, 0, len(acc.Metrics), "There should not be any points")
 
 	// Gather points
 	err = k.Gather(&acc)

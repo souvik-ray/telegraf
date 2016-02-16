@@ -319,7 +319,7 @@ func (a *Agent) Run(shutdown chan struct{}) error {
 		a.Config.Agent.Hostname, a.Config.Agent.FlushInterval.Duration)
 
 	// channel shared between all input threads for accumulating points
-	metricC := make(chan telegraf.Metric, 1000)
+	metricC := make(chan telegraf.Metric, 10000)
 
 	// Round collection to nearest interval by sleeping
 	if a.Config.Agent.RoundInterval {
@@ -342,7 +342,10 @@ func (a *Agent) Run(shutdown chan struct{}) error {
 		// Start service of any ServicePlugins
 		switch p := input.Input.(type) {
 		case telegraf.ServiceInput:
-			if err := p.Start(); err != nil {
+			acc := NewAccumulator(input.Config, metricC)
+			acc.SetDebug(a.Config.Agent.Debug)
+			acc.setDefaultTags(a.Config.Tags)
+			if err := p.Start(acc); err != nil {
 				log.Printf("Service for input %s failed to start, exiting\n%s\n",
 					input.Name, err.Error())
 				return err
